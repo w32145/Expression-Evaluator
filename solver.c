@@ -3,79 +3,82 @@
 #include <math.h>
 
 #include "methods.h"
+#include "macros.h"
+#include "stack.h"
 
-double solve(char **rpn, int len)
-{
+double solve(char** rpn, int len) {
+
     double numbers[len];
-    int idx = 0;
+    STACK* stack = malloc(sizeof(STACK));
+    initStack(stack, sizeof(double), STACK_SIZE);
 
-    for (int i = 0; i < len; i++)
-    {
+    for (int i = 0; i < len; i++) {
 
         double left = 0;
         double right = 0;
+
         char op = rpn[i][0];
 
-        if (isOp(op) && !isNumber(rpn[i]))
-        {
+        if (isOp(op) && !isNumber(rpn[i])) {
 
-            if (idx >= 2)
-            {
-
-                right = numbers[idx - 1];
-                idx--;
-                left = numbers[idx - 1];
-                idx--;
+            if (getCount(stack) >= 2) {
+                right = *(double*)(peek(stack));
+                pop(stack);
+                left = *(double*)(peek(stack));
+                pop(stack);
             }
-            else if (idx == 1)
-            {
-
-                right = numbers[idx - 1];
-                idx--;
+            else if (getCount(stack) == 1) {
+                right = *(double*)(peek(stack));
+                pop(stack);
             }
-            else
-            {
-                printf("An operator was encountered but there were no operands\n");
+            else {
+                perror("An operator was encountered but there were no operands\n");
             }
 
             double x = 0;
 
-            switch (op)
-            {
-            case '+':
+            switch (op) {
+                case '+':
                 x = left + right;
-
                 break;
 
-            case '-':
+                case '-':
                 x = left - right;
                 break;
 
-            case '*':
+                case '*':
                 x = left * right;
                 break;
 
-            case '/':
+                case '/':
+                if (right == 0) {
+                    return -1;
+                }
                 x = left / right;
                 break;
-            case '^':
+
+                case '^':
                 x = pow(left, right);
             }
 
-            numbers[idx] = x;
-            idx++;
+            push(stack, &x);
         }
-        else
-        {
-            numbers[idx] = strtod(rpn[i], NULL);
-            idx++;
+        else {
+            double number = strtod(rpn[i], NULL);
+            push(stack, &number);
         }
+
     }
 
-    if (idx == 0)
-    {
-        return numbers[0];
-    }
+    double result;
 
-    return numbers[idx - 1];
+    if (tryPeek(stack)) {
+        result = *(double*)(peek(stack));
+    }
+    else {
+        result = numbers[0];
+    }
+    
+    destroy(stack);
+    return result;
 }

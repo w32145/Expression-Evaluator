@@ -8,7 +8,6 @@
 
 double solve(char** rpn, int len) {
 
-    double numbers[len];
     STACK* stack = malloc(sizeof(STACK));
     initStack(stack, sizeof(double), STACK_SIZE);
 
@@ -76,7 +75,7 @@ double solve(char** rpn, int len) {
         result = *(double*)(peek(stack));
     }
     else {
-        result = numbers[0];
+        result = 0.00;
     }
     
     destroy(stack);

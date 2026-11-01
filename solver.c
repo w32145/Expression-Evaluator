@@ -8,8 +8,7 @@
 
 double solve(char** rpn, int len) {
 
-    STACK* stack = malloc(sizeof(STACK));
-    initStack(stack, sizeof(double), STACK_SIZE);
+    STACK* stack = initStack(STACK_SIZE);
 
     for (int i = 0; i < len; i++) {
 

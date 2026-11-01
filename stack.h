@@ -3,14 +3,12 @@
 
 typedef struct
 {
-    void* block;
-    int bytes;
-
+    void** block;
     int count;
     int max;
 } STACK;
 
-void initStack(STACK* stack, int bytes, int max);
+STACK* initStack(int max);
 int push (STACK* stack, void* in);
 int pop(STACK* stack);
 int tryPeek(STACK* stack);

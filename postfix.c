@@ -32,8 +32,7 @@ int isLeft(char c)
 char** postfix(char** tokens, int len, int* postLen) {
 
     char** rpn = malloc(sizeof(char*) * len);
-    STACK* stack = malloc(sizeof(STACK));
-    initStack(stack, sizeof(char), STACK_SIZE);
+    STACK* stack = initStack(STACK_SIZE);
     char top;
 
     for (int i = 0; i < len; i++) {
@@ -71,10 +70,8 @@ char** postfix(char** tokens, int len, int* postLen) {
                 continue;
             }
             else if (isLeft(op)) {
-
-
+                
                 while (getPrec(top) >= getPrec(op) && isLeft(top)) {
-
                     char* toString = malloc(2);
                     toString[0] = top;
                     toString[1] = '\0';
@@ -90,12 +87,8 @@ char** postfix(char** tokens, int len, int* postLen) {
                         top = ' ';
                     }
                 }
-
-
-
             }
-
-            push(stack, &op);
+            push(stack, tokens[i]);
         }
 
         else {
@@ -115,7 +108,7 @@ char** postfix(char** tokens, int len, int* postLen) {
         pop(stack);
         (*postLen)++;
     }
-
+    
     destroy(stack);
     return rpn;
 }
